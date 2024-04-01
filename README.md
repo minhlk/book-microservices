@@ -9,9 +9,13 @@ Main components
     - Order (Optional)
 
 - DB: 
-    - Catalogue: Mysql
+    - Catalogue: Mongo
     - User: Mongo
     - Cart: Redis (Optional)
+    - Rating: Mysql (Optional)
+
+- Rating (Optional)
+    - Rate by user
 
 - Cart (Optional)
     - CRUD cart
