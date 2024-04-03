@@ -80,6 +80,20 @@ function verifyToken(req, res, next) {
     });
 }
 
+app.get('/check/:name', async (req, res) => {
+    if (mongoConnected) {
+        let user = await usersCollection.findOne({ name: req.params.name})
+        if (user) {
+            res.json(user)
+        } else {
+            res.status(401).json({error: 'User is not existed'})
+        }
+        return;
+    }
+
+    res.status(500).send('database not available');
+});
+
 app.get('/user/info', verifyToken, async (req, res) => {
     // Access user information from decoded token
     let { _id } = req.user;
