@@ -1,0 +1,18 @@
+{
+  "name": "catalogue",
+  "version": "1.0.0",
+  "description": "User microservices",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "MinhLK",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.5.0"
+  }
+}
