@@ -59,15 +59,27 @@ app.listen(port, () => {
     console.log('Books started on port', port);
 });
 
-// all books
+// Get book by sku
+app.get('/book/:sku', async (req, res) => {
+    if(mongoConnected) {
+        try {
+            let book = await collection.findOne({sku: req.params.sku})
+            res.json(book);
+        } catch(e) {
+            // req.log.error('ERROR', e);
+            res.status(500).send(e);
+        }
+    } else {
+        // req.log.error('database not available');
+        res.status(500).send('database not available');
+    }
+});
+
 app.get('/books', async (req, res) => {
     if(mongoConnected) {
         try {
             //Search by category
             if (req.query.category !== undefined) {
-                // let books = await collection.find({
-                //     '$text': { '$search': req.query.category }
-                // }).toArray()
                 let books = await collection.find({
                     categories: { $in: [req.query.category] }
                 }).toArray()
