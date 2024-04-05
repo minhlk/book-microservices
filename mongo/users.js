@@ -1,7 +1,7 @@
 //
 // Books
 //
-db = db.getSiblingDB('users');
+db = db.getSiblingDB('BookShop');
 db.users.insertMany([
     {name: 'admin', password: 'password', email: 'admin@mail.com'},
     {name: 'user', password: 'bigbrain', email: 'user@mail.com'},

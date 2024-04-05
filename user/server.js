@@ -18,6 +18,19 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
 
+
+// Error handling middleware
+function dbHandler(err, req, res, next) {
+    if (!mongoConnected) {
+        res.status(500).send('Database not available');
+    } else {
+        next()
+    }
+}
+
+// Use the errorHandler middleware for all routes
+app.use(dbHandler);
+
 app.get('/health', (req, res) => {
     var stat = {
         app: 'OK',
@@ -33,7 +46,7 @@ const mongoPort = process.env.MONGO_INITDB_PORT || 27017;
 const url = `mongodb://${user}:${password}@mongodb:${mongoPort}`;
 const client = new MongoClient(url);
 let usersCollection;
-
+let ordersCollection;
 // mongodb connection retry loop
 function mongoLoop() {
     mongoConnect()
@@ -49,8 +62,8 @@ function mongoLoop() {
 async function mongoConnect() {
     await client.connect();
     console.log('Connected successfully to server');
-    usersCollection = client.db('users').collection('users');
-    // console.log( await books.find().toArray())
+    usersCollection = client.db('BookShop').collection('users');
+    ordersCollection = client.db('BookShop').collection('orders');
 }
 
 mongoLoop();
@@ -82,11 +95,11 @@ function verifyToken(req, res, next) {
 
 app.get('/check/:name', async (req, res) => {
     if (mongoConnected) {
-        let user = await usersCollection.findOne({ name: req.params.name})
+        let user = await usersCollection.findOne({ name: req.params.name })
         if (user) {
             res.json(user)
         } else {
-            res.status(401).json({error: 'User is not existed'})
+            res.json({ error: 'User is not existed' })
         }
         return;
     }
@@ -179,6 +192,41 @@ app.post('/register', async (req, res) => {
 
     // req.log.error('database not available');
     res.status(500).send('database not available');
+});
+
+app.post('/order/:id', async (req, res) => {
+    try {
+        let user = await usersCollection.findOne({
+            name: req.params.id
+        })
+
+        if (!user) {
+            res.status(404).send('name not found');
+        }
+
+        let history = await ordersCollection.findOne({
+            name: req.params.id
+        })
+
+        if (history) {
+            let list = history.history;
+            list.push(req.body);
+            await ordersCollection.updateOne(
+                { name: req.params.id },
+                { $set: { history: list } }
+            )
+            res.send('OK');
+        } else {
+            // no history
+            await ordersCollection.insertOne({
+                name: req.params.id,
+                history: [req.body]
+            })
+            res.send('OK');
+        }
+    } catch (e) {
+        res.status(500).send(e);
+    }
 });
 
 //TODO: Add Typescript
