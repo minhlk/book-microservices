@@ -76,5 +76,21 @@ services:
     networks:
       - book-shop
 
+  payment:
+    build:
+      context: ./payment
+      dockerfile: ./Dockerfile
+    # ports:
+    #   - 8082:8080
+    # Local dev
+    # volumes:
+    #   - ./payment/server.js:/var/www/server.js
+    networks:
+      - book-shop
+    depends_on:
+      - cart
+      - user
+      - books
+
 networks:
   book-shop:
