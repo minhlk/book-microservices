@@ -30,8 +30,8 @@ services:
     # ports:
       # - 8082:8080
     # Local dev
-    volumes:
-      - ./book/server.js:/var/www/server.js
+    # volumes:
+    #   - ./book/server.js:/var/www/server.js
     networks:
       - book-shop
     depends_on:
@@ -45,7 +45,7 @@ services:
       context: ./user
       dockerfile: ./Dockerfile
     # ports:
-    #   - 8082:8080
+    #   - 8084:8080
     # Local dev
     # volumes:
     #   - ./user/server.js:/var/www/server.js
@@ -62,10 +62,10 @@ services:
       context: ./cart
       dockerfile: ./Dockerfile
     # ports:
-    #   - 8082:8080
+    #   - 8083:8080
     # Local dev
-    volumes:
-      - ./cart/server.js:/var/www/server.js
+    # volumes:
+    #   - ./cart/server.js:/var/www/server.js
     networks:
       - book-shop
     depends_on:
